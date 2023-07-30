@@ -99,14 +99,10 @@ const Drawer = styled(MuiDrawer, {shouldForwardProp: (prop) => prop !== 'open'})
 
 
 export default function DashboardLayout({children}) {
-    useEffect(() => {
-        const cookies = parseCookies()
-        if (!cookies.token) redirect('/');
-    }, [])
     const theme = useTheme();
     const router = useRouter();
     const [open, setOpen] = useState(false);
-    const [selectedIndex, setSelectedIndex] = useState(0);
+    const [selectedIndex, setSelectedIndex] = useState();
 
     const [openDialog, setOpenDialog] = useState(false);
 
@@ -119,31 +115,14 @@ export default function DashboardLayout({children}) {
     };
 
     const logoutAction = () => {
-        destroyCookie(null, 'token')
         setOpenDialog(false);
+        destroyCookie(null, 'token')
+        onClickNav('/')
     }
 
     const onClickNav = (event) => {
-        router.push(event)
+        router.replace(event)
     }
-
-    const handleListItemClick = (event, index) => {
-        setSelectedIndex(index);
-
-        if (index === 0) {
-            onClickNav('/summary')
-        } else if (index === 1) {
-            onClickNav('/operasional')
-        } else if (index === 2) {
-            onClickNav('/invest')
-        } else if (index === 3) {
-            onClickNav('/funding')
-        } else if (index === 4) {
-            onClickNav('/account')
-        } else if (index === 5) {
-            onClickNav('/period')
-        }
-    };
 
 
     const handleDrawerOpen = () => {
@@ -197,7 +176,10 @@ export default function DashboardLayout({children}) {
                                 px: 2.5,
                             }}
                             selected={selectedIndex === 0}
-                            onClick={(event) => handleListItemClick(event, 0)}
+                            onClick={() => {
+                                setSelectedIndex(0)
+                                onClickNav('/summary')
+                            }}
                         >
                             <ListItemIcon
                                 sx={{
@@ -226,7 +208,10 @@ export default function DashboardLayout({children}) {
                                 px: 2.5,
                             }}
                             selected={selectedIndex === 1}
-                            onClick={(event) => handleListItemClick(event, 1)}
+                            onClick={() => {
+                                setSelectedIndex(1)
+                                onClickNav('/operasional')
+                            }}
                         >
                             <ListItemIcon
                                 sx={{
@@ -248,7 +233,10 @@ export default function DashboardLayout({children}) {
                                 px: 2.5,
                             }}
                             selected={selectedIndex === 2}
-                            onClick={(event) => handleListItemClick(event, 2)}
+                            onClick={() => {
+                                setSelectedIndex(2)
+                                onClickNav('/invest')
+                            }}
                         >
                             <ListItemIcon
                                 sx={{
@@ -270,7 +258,10 @@ export default function DashboardLayout({children}) {
                                 px: 2.5,
                             }}
                             selected={selectedIndex === 3}
-                            onClick={(event) => handleListItemClick(event, 3)}
+                            onClick={(event) => {
+                                setSelectedIndex(3)
+                                onClickNav('/funding')
+                            }}
                         >
                             <ListItemIcon
                                 sx={{
@@ -298,7 +289,10 @@ export default function DashboardLayout({children}) {
                                 px: 2.5,
                             }}
                             selected={selectedIndex === 4}
-                            onClick={(event) => handleListItemClick(event, 4)}
+                            onClick={(event) => {
+                                setSelectedIndex(4)
+                                onClickNav('/account')
+                            }}
                         >
                             <ListItemIcon
                                 sx={{
@@ -320,7 +314,10 @@ export default function DashboardLayout({children}) {
                                 px: 2.5,
                             }}
                             selected={selectedIndex === 5}
-                            onClick={(event) => handleListItemClick(event, 5)}
+                            onClick={(event) => {
+                                setSelectedIndex(5)
+                                onClickNav('/period')
+                            }}
                         >
                             <ListItemIcon
                                 sx={{

@@ -10,12 +10,15 @@ import {useEffect, useState} from "react";
 import Box from "@mui/material/Box";
 
 export default function Home() {
+
     const router = useRouter();
-    const [loading, setLoading] = useState(false);
+    const cookies = parseCookies()
     useEffect(() => {
-        const cookies = parseCookies()
-        if (cookies.token) redirect('/summary');
-    })
+        if (cookies.token) {
+            router.replace('/summary')
+        }
+    }, [])
+    const [loading, setLoading] = useState(false);
     const {register, handleSubmit, watch, formState: {errors}} = useForm();
 
     const doLogin = (e) => {
@@ -25,9 +28,9 @@ export default function Home() {
             password: e.password
         }).then(res => {
             setLoading(false)
-            nookies.set(null, "token", res.data.data.token);
+            nookies.set(null, "token", res.data.data_list.token);
             router.replace("/summary");
-        }).catch(err =>{
+        }).catch(err => {
             setLoading(false)
         })
     }
