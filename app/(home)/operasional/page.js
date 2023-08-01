@@ -11,7 +11,7 @@ import axios from "axios";
 import {
     Alert, Autocomplete,
     Button,
-    CircularProgress,
+    CircularProgress, InputAdornment,
     LinearProgress,
     MenuItem,
     TablePagination,
@@ -35,6 +35,14 @@ import CheckSession from "@/app/(home)/helper";
 import Box from "@mui/material/Box";
 import moment from "moment";
 
+function formatRupiah(money) {
+
+    return new Intl.NumberFormat('id-ID',
+        {style: 'currency', currency: 'IDR'}
+    ).format(money);
+
+}
+
 
 export default function OperationalPage() {
     useEffect(() => {
@@ -48,12 +56,11 @@ export default function OperationalPage() {
     const [valueDate, setValueDate] = useState(dayjs());
     const [description, setDescription] = useState("");
     const [selectTypeTransaction, setSelectTypeTransaction] = useState("");
-    const [amount, setAmount] = useState("");
+    const [amount, setAmount] = useState();
     const [yearPeriodID, setYearPeriodID] = useState(0);
     const [periodCollection, setPeriodCollection] = useState([]);
     const [loading, setLoading] = useState(false);
     const [errorData, setErrorData] = useState(false);
-
 
     useEffect(() => {
         if (open) {
@@ -84,7 +91,7 @@ export default function OperationalPage() {
             method: 'POST',
             url: `http://localhost:8080/api/v1/activity/create/operation`,
             data: {
-                input_date: moment(valueDate.$d).format("DD/MM/YYYY"),
+                input_date: dayjs(valueDate.$d).format("DD/MM/YYYY"),
                 description: description,
                 amount: amount,
                 type_transaction: selectTypeTransaction,
@@ -112,7 +119,7 @@ export default function OperationalPage() {
             setLoading(false)
             setErrorData(false)
             setDescription("")
-            setAmount("")
+            setAmount()
             setSelectTypeTransaction("")
             setYearPeriodID(0)
         }
@@ -204,7 +211,12 @@ export default function OperationalPage() {
                                className="mt-2" value={amount}
                                onChange={(e) => {
                                    setAmount(e.target.value)
-                               }}/>
+                               }}
+                               InputProps={{
+                                   startAdornment: <InputAdornment position="start">Rp</InputAdornment>,
+                               }}
+
+                    />
                     <Autocomplete
                         freeSolo
                         id="free-solo-2-demo"
@@ -280,7 +292,7 @@ export default function OperationalPage() {
                                         {res.input_date}
                                     </TableCell>
                                     <TableCell align="right">{res.description}</TableCell>
-                                    <TableCell align="right">{res.amount}</TableCell>
+                                    <TableCell align="right">{formatRupiah(res.amount)}</TableCell>
                                     <TableCell align="right">{res.type_transaction}</TableCell>
                                     <TableCell align="right">{res.period.month} {res.period.year}</TableCell>
                                 </TableRow>
