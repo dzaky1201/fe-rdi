@@ -34,6 +34,9 @@ import {redirect} from "next/navigation";
 import CheckSession from "@/app/(home)/helper";
 import Box from "@mui/material/Box";
 import {useDebounce} from "use-debounce";
+import {Delete} from "@mui/icons-material";
+import IconButton from "@mui/material/IconButton";
+import * as React from "react";
 
 function formatRupiah(money) {
 
@@ -53,6 +56,7 @@ export default function OperationalPage() {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [open, setOpen] = useState(false);
+    const [openDelete, setOpenDelete] = useState(false);
     const [valueDate, setValueDate] = useState(dayjs());
     const [description, setDescription] = useState("");
     const [selectTypeTransaction, setSelectTypeTransaction] = useState("");
@@ -63,6 +67,7 @@ export default function OperationalPage() {
     const [errorData, setErrorData] = useState(false);
     const [search, setSearch] = useState("");
     const [debouncedText] = useDebounce(search, 2000);
+    const [idDelete, setIdDelete] = useState(0);
 
     useEffect(() => {
         if (open) {
@@ -119,8 +124,40 @@ export default function OperationalPage() {
         })
     }
 
+    const deleteData = () => {
+        console.log(idDelete)
+        setErrorData(false)
+        setLoading(true)
+        axios.request({
+            headers: {
+                'Authorization': `Bearer ${cookies.token}`
+            },
+            method: 'DELETE',
+            url: `http://localhost:8080/api/v1/activity/delete/operation/${idDelete}`,
+        }).then(res => {
+            setLoading(false)
+            if (res.status === 200) {
+                handleCloseDelete()
+                mutateData({...dataListTable, name: res.data.data_list})
+            }
+        }).catch(() => {
+            setLoading(false)
+            setErrorData(true)
+        })
+    }
+
     const handleClickOpen = () => {
         setOpen(true);
+    };
+
+    const handleClickOpenDelete = (id) => {
+        setOpenDelete(true);
+        setIdDelete(id)
+    };
+
+    const handleCloseDelete = () => {
+        setOpenDelete(false);
+        setIdDelete(0)
     };
 
     const handleClose = (event, reason) => {
@@ -155,7 +192,6 @@ export default function OperationalPage() {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
-
 
 
     return (
@@ -277,6 +313,27 @@ export default function OperationalPage() {
                     Gagal menambahkan data
                 </Alert>}
             </Dialog>
+            <Dialog
+                open={openDelete}
+                onClose={handleCloseDelete}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {"Apakah anda yakin ingin Menghapus data ?"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Jika sudah yakin silahkan klik ya
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseDelete} autoFocus>
+                        Tidak
+                    </Button>
+                    <Button onClick={deleteData}>Ya</Button>
+                </DialogActions>
+            </Dialog>
             {dataListTable ? dataListTable.data_list ? <><TableContainer component={Paper} className={"mt-2"}>
                     <Table sx={{minWidth: 650}} aria-label="simple table">
                         <TableHead>
@@ -286,6 +343,8 @@ export default function OperationalPage() {
                                 <TableCell align="left">Jumlah</TableCell>
                                 <TableCell align="left">Tipe Transaksi</TableCell>
                                 <TableCell align="left">Periode</TableCell>
+                                <TableCell align="left">Action</TableCell>
+
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -294,7 +353,7 @@ export default function OperationalPage() {
                                     key={res.id}
                                     sx={{'&:last-child td, &:last-child th': {border: 0}}}
                                     onClick={() => {
-                                        console.log(index)
+                                        console.log(res.id)
                                     }}
                                 >
                                     <TableCell component="th" scope="row">
@@ -304,6 +363,8 @@ export default function OperationalPage() {
                                     <TableCell align="left">{formatRupiah(res.amount)}</TableCell>
                                     <TableCell align="left">{res.type_transaction}</TableCell>
                                     <TableCell align="left">{res.period.month} {res.period.year}</TableCell>
+                                    <TableCell align="left"> <IconButton
+                                        onClick={() => handleClickOpenDelete(res.id)}><Delete/></IconButton></TableCell>
                                 </TableRow>
                             )) : <Typography>Error</Typography>}
                         </TableBody>
