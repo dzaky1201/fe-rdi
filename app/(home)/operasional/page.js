@@ -29,7 +29,7 @@ import {DataGrid} from "@mui/x-data-grid";
 import {useForm} from "react-hook-form";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
-import useSWR from "swr";
+import useSWR, {mutate} from "swr";
 import {redirect} from "next/navigation";
 import CheckSession from "@/app/(home)/helper";
 import Box from "@mui/material/Box";
@@ -94,6 +94,7 @@ export default function OperationalPage() {
             if (res.status === 200) {
                 handleClose()
                 setValueDate(dayjs())
+                mutate(`http://localhost:8080/api/v1/activity/list/operation?page=${page + 1}&limit=${rowsPerPage}`)
             }
         }).catch(() => {
             setLoading(false)
@@ -143,7 +144,7 @@ export default function OperationalPage() {
         data: dataListTable,
         error: errorListTable,
         isLoading: loadingListTable
-    } = useSWR(`http://localhost:8080/api/v1/activity/list/operation?page=${page + 1}&limit=${rowsPerPage}`, fetcher, {refreshInterval: 1000})
+    } = useSWR(`http://localhost:8080/api/v1/activity/list/operation?page=${page + 1}&limit=${rowsPerPage}`, fetcher)
 
 
     return (
