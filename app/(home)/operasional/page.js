@@ -33,7 +33,7 @@ import useSWR, {mutate} from "swr";
 import {redirect} from "next/navigation";
 import CheckSession from "@/app/(home)/helper";
 import Box from "@mui/material/Box";
-import moment from "moment";
+import {useDebounce} from "use-debounce";
 
 function formatRupiah(money) {
 
@@ -56,11 +56,13 @@ export default function OperationalPage() {
     const [valueDate, setValueDate] = useState(dayjs());
     const [description, setDescription] = useState("");
     const [selectTypeTransaction, setSelectTypeTransaction] = useState("");
-    const [amount, setAmount] = useState();
+    const [amount, setAmount] = useState(0);
     const [yearPeriodID, setYearPeriodID] = useState(0);
     const [periodCollection, setPeriodCollection] = useState([]);
     const [loading, setLoading] = useState(false);
     const [errorData, setErrorData] = useState(false);
+    const [search, setSearch] = useState("");
+    const [debouncedText] = useDebounce(search, 2000);
 
     useEffect(() => {
         if (open) {
@@ -80,6 +82,14 @@ export default function OperationalPage() {
             })
         }
     }, [open])
+
+    const fetcher = url => axios.get(url, {headers: {Authorization: `Bearer ${cookies.token}`}}).then(res => res.data)
+    const {
+        data: dataListTable,
+        error: errorListTable,
+        isLoading: loadingListTable,
+        mutate: mutateData
+    } = useSWR(`http://localhost:8080/api/v1/activity/list/operation?page=${page + 1}&limit=${rowsPerPage}&description=${debouncedText}`, fetcher)
 
     const addData = () => {
         setErrorData(false)
@@ -101,7 +111,7 @@ export default function OperationalPage() {
             if (res.status === 200) {
                 handleClose()
                 setValueDate(dayjs())
-                mutate(`http://localhost:8080/api/v1/activity/list/operation?page=${page + 1}&limit=${rowsPerPage}`)
+                mutateData({...dataListTable, name: res.data.data_list})
             }
         }).catch(() => {
             setLoading(false)
@@ -119,7 +129,7 @@ export default function OperationalPage() {
             setLoading(false)
             setErrorData(false)
             setDescription("")
-            setAmount()
+            setAmount(0)
             setSelectTypeTransaction("")
             setYearPeriodID(0)
         }
@@ -146,20 +156,19 @@ export default function OperationalPage() {
         setPage(0);
     };
 
-    const fetcher = url => axios.get(url, {headers: {Authorization: `Bearer ${cookies.token}`}}).then(res => res.data)
-    const {
-        data: dataListTable,
-        error: errorListTable,
-        isLoading: loadingListTable
-    } = useSWR(`http://localhost:8080/api/v1/activity/list/operation?page=${page + 1}&limit=${rowsPerPage}`, fetcher)
 
 
     return (
         <>
             {loadingListTable && <Box className={'w-full mb-2'}><LinearProgress className={"bg-orange-500"}/></Box>}
-            <Button variant="outlined" onClick={handleClickOpen}>
-                Tambah data baru
-            </Button>
+            <Box className={"flex justify-between"}>
+                <TextField id="outlined-search" size={"small"} label="Search field" type="search" value={search}
+                           onChange={(e) => setSearch(e.target.value)}/>
+                <Button variant="contained" className={"bg-orange-500 hover:bg-orange-400"} size={"small"}
+                        onClick={handleClickOpen}>
+                    Tambah data baru
+                </Button>
+            </Box>
             <Dialog open={open} onClose={handleClose} fullWidth={true}>
                 <DialogTitle>Tambah data arus kas</DialogTitle>
                 <DialogContent>
@@ -273,10 +282,10 @@ export default function OperationalPage() {
                         <TableHead>
                             <TableRow>
                                 <TableCell>Tanggal Input</TableCell>
-                                <TableCell align="right">Deskripsi</TableCell>
-                                <TableCell align="right">Jumlah</TableCell>
-                                <TableCell align="right">Tipe Transaksi</TableCell>
-                                <TableCell align="right">Periode</TableCell>
+                                <TableCell align="left">Deskripsi</TableCell>
+                                <TableCell align="left">Jumlah</TableCell>
+                                <TableCell align="left">Tipe Transaksi</TableCell>
+                                <TableCell align="left">Periode</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -291,10 +300,10 @@ export default function OperationalPage() {
                                     <TableCell component="th" scope="row">
                                         {res.input_date}
                                     </TableCell>
-                                    <TableCell align="right">{res.description}</TableCell>
-                                    <TableCell align="right">{formatRupiah(res.amount)}</TableCell>
-                                    <TableCell align="right">{res.type_transaction}</TableCell>
-                                    <TableCell align="right">{res.period.month} {res.period.year}</TableCell>
+                                    <TableCell align="left">{res.description}</TableCell>
+                                    <TableCell align="left">{formatRupiah(res.amount)}</TableCell>
+                                    <TableCell align="left">{res.type_transaction}</TableCell>
+                                    <TableCell align="left">{res.period.month} {res.period.year}</TableCell>
                                 </TableRow>
                             )) : <Typography>Error</Typography>}
                         </TableBody>
@@ -307,8 +316,8 @@ export default function OperationalPage() {
                         onPageChange={handleChangePage}
                         rowsPerPage={rowsPerPage}
                         onRowsPerPageChange={handleChangeRowsPerPage}
-                    /></> : <Typography className={"text-center"}> Tidak Ada data</Typography> :
-                <Typography className={"text-center"}>Tunggu sebentar</Typography>}
+                    /></> : <Typography className={"text-center mt-80"}> Tidak Ada data</Typography> :
+                <Typography className={"text-center mt-80"}>Tunggu sebentar</Typography>}
         </>
 
     );
