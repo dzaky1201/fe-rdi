@@ -25,18 +25,16 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import DialogActions from "@mui/material/DialogActions";
-import {DataGrid} from "@mui/x-data-grid";
-import {useForm} from "react-hook-form";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import useSWR, {mutate} from "swr";
-import {redirect} from "next/navigation";
 import CheckSession from "@/app/(home)/helper";
 import Box from "@mui/material/Box";
 import {useDebounce} from "use-debounce";
-import {Delete} from "@mui/icons-material";
-import IconButton from "@mui/material/IconButton";
+import {Delete, KeyboardArrowDown} from "@mui/icons-material";
+import EditIcon from '@mui/icons-material/Edit';
 import * as React from "react";
+import StyledMenu from "@/app/(home)/operasional/MenuComponent";
 
 function formatRupiah(money) {
 
@@ -68,6 +66,15 @@ export default function OperationalPage() {
     const [search, setSearch] = useState("");
     const [debouncedText] = useDebounce(search, 2000);
     const [idDelete, setIdDelete] = useState(0);
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
+    const openMenu = Boolean(anchorEl);
+    const handleClickMenu = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleCloseMenu = () => {
+        setAnchorEl(null);
+    };
 
     useEffect(() => {
         if (open) {
@@ -152,6 +159,7 @@ export default function OperationalPage() {
 
     const handleClickOpenDelete = (id) => {
         setOpenDelete(true);
+        handleCloseMenu()
         setIdDelete(id)
     };
 
@@ -198,7 +206,7 @@ export default function OperationalPage() {
         <>
             {loadingListTable && <Box className={'w-full mb-2'}><LinearProgress className={"bg-orange-500"}/></Box>}
             <Box className={"flex justify-between"}>
-                <TextField id="outlined-search" size={"small"} label="Search field" type="search" value={search}
+                <TextField id="outlined-search" size={"small"} label="Cari data keuangan" type="search" value={search}
                            onChange={(e) => setSearch(e.target.value)}/>
                 <Button variant="contained" className={"bg-orange-500 hover:bg-orange-400"} size={"small"}
                         onClick={handleClickOpen}>
@@ -336,14 +344,14 @@ export default function OperationalPage() {
             </Dialog>
             {dataListTable ? dataListTable.data_list ? <><TableContainer component={Paper} className={"mt-2"}>
                     <Table sx={{minWidth: 650}} aria-label="simple table">
-                        <TableHead>
+                        <TableHead className={"bg-gray-100"}>
                             <TableRow>
                                 <TableCell>Tanggal Input</TableCell>
                                 <TableCell align="left">Deskripsi</TableCell>
                                 <TableCell align="left">Jumlah</TableCell>
                                 <TableCell align="left">Tipe Transaksi</TableCell>
                                 <TableCell align="left">Periode</TableCell>
-                                <TableCell align="left">Action</TableCell>
+                                <TableCell align="center">Action</TableCell>
 
                             </TableRow>
                         </TableHead>
@@ -363,8 +371,41 @@ export default function OperationalPage() {
                                     <TableCell align="left">{formatRupiah(res.amount)}</TableCell>
                                     <TableCell align="left">{res.type_transaction}</TableCell>
                                     <TableCell align="left">{res.period.month} {res.period.year}</TableCell>
-                                    <TableCell align="left"> <IconButton
-                                        onClick={() => handleClickOpenDelete(res.id)}><Delete/></IconButton></TableCell>
+                                    <TableCell align="center">
+
+                                        <Button
+                                            id="demo-customized-button"
+                                            aria-controls={openMenu ? 'demo-customized-menu' : undefined}
+                                            aria-haspopup="true"
+                                            className={"bg-orange-500 hover:bg-orange-400"}
+                                            aria-expanded={openMenu ? 'true' : undefined}
+                                            variant="contained"
+                                            disableElevation
+                                            onClick={handleClickMenu}
+                                            endIcon={<KeyboardArrowDown/>}
+                                        >
+                                            Actions
+                                        </Button>
+                                        <StyledMenu
+                                            id="demo-customized-menu"
+                                            MenuListProps={{
+                                                'aria-labelledby': 'demo-customized-button',
+                                            }}
+                                            anchorEl={anchorEl}
+                                            open={openMenu}
+                                            onClose={handleCloseMenu}
+                                        >
+                                            <MenuItem onClick={handleCloseMenu} disableRipple>
+                                                <EditIcon/>
+                                                Edit
+                                            </MenuItem>
+                                            <MenuItem onClick={() => handleClickOpenDelete(res.id)} disableRipple>
+                                                <Delete/>
+                                                Delete
+                                            </MenuItem>
+                                        </StyledMenu>
+
+                                    </TableCell>
                                 </TableRow>
                             )) : <Typography>Error</Typography>}
                         </TableBody>
