@@ -33,6 +33,7 @@ import useSWR from "swr";
 import {redirect} from "next/navigation";
 import CheckSession from "@/app/(home)/helper";
 import Box from "@mui/material/Box";
+import moment from "moment";
 
 
 export default function OperationalPage() {
@@ -83,7 +84,7 @@ export default function OperationalPage() {
             method: 'POST',
             url: `http://localhost:8080/api/v1/activity/create/operation`,
             data: {
-                input_date: valueDate.$d,
+                input_date: moment(valueDate.$d).format("DD/MM/YYYY"),
                 description: description,
                 amount: amount,
                 type_transaction: selectTypeTransaction,
