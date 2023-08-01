@@ -28,7 +28,6 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogActions from "@mui/material/DialogActions";
 import * as React from "react";
-import Link from "next/link";
 
 const drawerWidth = 240;
 

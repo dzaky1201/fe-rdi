@@ -8,7 +8,16 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import {useEffect, useState} from "react";
 import axios from "axios";
-import {Button, LinearProgress, MenuItem, TablePagination, TextField, Typography} from "@mui/material";
+import {
+    Alert, Autocomplete,
+    Button,
+    CircularProgress,
+    LinearProgress,
+    MenuItem,
+    TablePagination,
+    TextField,
+    Typography
+} from "@mui/material";
 import nookies, {parseCookies} from "nookies";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -23,19 +32,50 @@ import dayjs from "dayjs";
 import useSWR from "swr";
 import {redirect} from "next/navigation";
 import CheckSession from "@/app/(home)/helper";
+import Box from "@mui/material/Box";
 
 
 export default function OperationalPage() {
-    CheckSession()
+    useEffect(() => {
+        CheckSession()
+    })
     const cookies = parseCookies()
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
-    const {register, handleSubmit, watch, formState: {errors}} = useForm();
     const [open, setOpen] = useState(false);
-    const [valueDate, setValueDate] = useState(dayjs);
+    const [valueDate, setValueDate] = useState(dayjs());
+    const [description, setDescription] = useState("");
+    const [selectTypeTransaction, setSelectTypeTransaction] = useState("");
+    const [amount, setAmount] = useState("");
+    const [yearPeriodID, setYearPeriodID] = useState(0);
+    const [periodCollection, setPeriodCollection] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [errorData, setErrorData] = useState(false);
 
-    const addData = (e) => {
+
+    useEffect(() => {
+        if (open) {
+            axios.request({
+                headers: {
+                    'Authorization': `Bearer ${cookies.token}`
+                },
+                method: 'GET',
+                url: `http://localhost:8080/api/v1/periods`,
+            }).then(res => {
+                if (res.status === 200) {
+                    setPeriodCollection(res.data.data_list)
+                }
+            }).catch(() => {
+                setLoading(false)
+                setErrorData(true)
+            })
+        }
+    }, [open])
+
+    const addData = () => {
+        setErrorData(false)
+        setLoading(true)
         axios.request({
             headers: {
                 'Authorization': `Bearer ${cookies.token}`
@@ -43,16 +83,20 @@ export default function OperationalPage() {
             method: 'POST',
             url: `http://localhost:8080/api/v1/activity/create/operation`,
             data: {
-                input_date: e.input_date,
-                description: e.description,
-                amount: e.amount,
-                type_transaction: e.type_transaction,
-                year_period_id: e.year_period_id,
+                input_date: valueDate.$d,
+                description: description,
+                amount: amount,
+                type_transaction: selectTypeTransaction,
+                year_period_id: yearPeriodID,
             }
         }).then(res => {
-            if (res) {
+            if (res.status === 200) {
                 handleClose()
+                setValueDate(dayjs())
             }
+        }).catch(() => {
+            setLoading(false)
+            setErrorData(true)
         })
     }
 
@@ -60,15 +104,25 @@ export default function OperationalPage() {
         setOpen(true);
     };
 
-    const handleClose = () => {
-        setOpen(false);
+    const handleClose = (event, reason) => {
+        if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') {
+            setOpen(false);
+            setLoading(false)
+            setErrorData(false)
+            setDescription("")
+            setAmount("")
+            setSelectTypeTransaction("")
+            setYearPeriodID(0)
+        }
     };
     const typeTransaction = [
         {
+            id: 1,
             value: 'debit',
             label: 'debit',
         },
         {
+            id: 2,
             value: 'credit',
             label: 'credit',
         }
@@ -84,145 +138,163 @@ export default function OperationalPage() {
     };
 
     const fetcher = url => axios.get(url, {headers: {Authorization: `Bearer ${cookies.token}`}}).then(res => res.data)
-    const fetcherPeriod = url => axios.get(url, {headers: {Authorization: `Bearer ${cookies.token}`}}).then(res => res.data)
     const {
         data: dataListTable,
         error: errorListTable,
         isLoading: loadingListTable
-    } = useSWR(`http://localhost:8080/api/v1/activity/list/operation?page=${page + 1}&limit=${rowsPerPage}`, fetcher)
-
-    const {
-        data,
-        error: errorPeriod,
-        isLoading: loadingPeriod
-    } = useSWR(`http://localhost:8080/api/v1/periods`, fetcherPeriod)
-
-    console.log(data)
-    // console.log(dataPeriod)
-
-    if (errorListTable) return <div>failed to load</div>
-    if (loadingListTable) return <LinearProgress className={"bg-orange-500"}/>
+    } = useSWR(`http://localhost:8080/api/v1/activity/list/operation?page=${page + 1}&limit=${rowsPerPage}`, fetcher, {refreshInterval: 1000})
 
 
     return (
         <>
+            {loadingListTable && <Box className={'w-full mb-2'}><LinearProgress className={"bg-orange-500"}/></Box>}
             <Button variant="outlined" onClick={handleClickOpen}>
                 Tambah data baru
             </Button>
-            <Dialog open={open} onClose={handleClose}>
+            <Dialog open={open} onClose={handleClose} fullWidth={true}>
                 <DialogTitle>Tambah data arus kas</DialogTitle>
-                <form onSubmit={handleSubmit(addData)}>
-                    <DialogContent>
-                        <DialogContentText>
-                            Masukan data operation
-                        </DialogContentText>
-                        <TextField
-                            autoFocus
-                            margin="dense"
-                            id="description"
-                            label="Description"
-                            fullWidth
-                            multiline
-                            rows={4}
-                            {...register("description", {required: true})}
-                        />
-                        <TextField
-                            id="outlined-select-type-transaction"
-                            select
-                            label="tipe transaksi"
-                            defaultValue="debit"
-                            helperText="Pilih tipe transaksi"
-                            className="mt-2"
-                            {...register("type_transaction", {required: true})}
-                        >
-                            {typeTransaction.map((option) => (
-                                <MenuItem key={option.value} value={option.value}>
+                <DialogContent>
+                    <DialogContentText>
+                        Masukan data operation
+                    </DialogContentText>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="description"
+                        label="Description"
+                        fullWidth
+                        multiline
+                        rows={4}
+                        value={description}
+                        onChange={(e) => {
+                            setDescription(e.target.value)
+                        }}
+                    />
+                    <Autocomplete
+                        freeSolo
+                        id="free-solo-2-demo"
+                        disableClearable
+                        className={"mt-2"}
+                        getOptionLabel={(option) => option.label}
+                        renderOption={(props, option) => {
+                            return (
+                                <Box component='li' {...props} key={option.id}>
                                     {option.label}
-                                </MenuItem>
-                            ))}
-                        </TextField>
-                        <TextField id="amount-input" label="Masukan Jumlah" variant="outlined"
-                                   className="mt-2 ml-2" {...register("amount", {required: true})}/>
-                        <TextField
-                            id="outlined-select-period"
-                            select
-                            defaultValue={2}
-                            label="periode"
-                            helperText="Pilih periode"
-                            className=" ml-2 mt-2"
-                            {...register("year_period_id", {required: true})}
-                        >
-                            {data ? data.data_list.map((option) => (
-                                <MenuItem key={option.id} value={option.id}>
-                                    {option.month} {option.year}
-                                </MenuItem>
-                            )) : <Typography>Error</Typography>}
-                        </TextField>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-
-                            <DatePicker
-                                label="Controlled picker"
-                                value={valueDate}
-                                className="mt-2"
-                                onChange={(newValue) => setValueDate(newValue)}
-                            />
-
-                        </LocalizationProvider>
-                        <TextField
-                            id="outlined-select-period"
-                            value={valueDate.format('YY-MM-DD')}
-                            label="input_date"
-                            helperText="Pilih tanggal"
-                            className="hidden"
-                            {...register("input_date", {required: true})}
-                        />
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleClose}>Batal</Button>
-                        <Button type={"submit"}>Simpan</Button>
-                    </DialogActions>
-                </form>
-            </Dialog>
-            <TableContainer component={Paper} className={"mt-2"}>
-                <Table sx={{minWidth: 650}} aria-label="simple table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Tanggal Input</TableCell>
-                            <TableCell align="right">Deskripsi</TableCell>
-                            <TableCell align="right">Jumlah</TableCell>
-                            <TableCell align="right">Tipe Transaksi</TableCell>
-                            <TableCell align="right">Periode</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {dataListTable.data_list.map((res, index) => (
-                            <TableRow
-                                key={res.id}
-                                sx={{'&:last-child td, &:last-child th': {border: 0}}}
-                                onClick={()=>{
-                                    console.log(index)
+                                </Box>
+                            );
+                        }}
+                        onChange={(e, type) => {
+                            setSelectTypeTransaction(type.value)
+                        }}
+                        options={typeTransaction}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                label="Pilih Tipe Transaksi"
+                                InputProps={{
+                                    ...params.InputProps,
+                                    type: 'search',
                                 }}
-                            >
-                                <TableCell component="th" scope="row">
-                                    {res.input_date}
-                                </TableCell>
-                                <TableCell align="right">{res.description}</TableCell>
-                                <TableCell align="right">{res.amount}</TableCell>
-                                <TableCell align="right">{res.type_transaction}</TableCell>
-                                <TableCell align="right">{res.period.month} {res.period.year}</TableCell>
+                            />
+                        )}
+                    />
+                    <TextField id="amount-input" label="Masukan Jumlah" variant="outlined"
+                               className="mt-2" value={amount}
+                               onChange={(e) => {
+                                   setAmount(e.target.value)
+                               }}/>
+                    <Autocomplete
+                        freeSolo
+                        id="free-solo-2-demo"
+                        disableClearable
+                        className={"mt-2"}
+                        getOptionLabel={(option) => option.label}
+                        renderOption={(props, option) => {
+                            return (
+                                <Box component='li' {...props} key={option.id}>
+                                    {option.label}
+                                </Box>
+                            );
+                        }}
+                        onChange={(e, period) => {
+                            setYearPeriodID(period.id)
+                        }}
+                        options={periodCollection}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                label="Pilih Periode"
+                                InputProps={{
+                                    ...params.InputProps,
+                                    type: 'search',
+                                }}
+                            />
+                        )}
+                    />
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+
+                        <DatePicker
+                            label="Pilih Tanggal"
+                            value={valueDate}
+                            className="mt-3"
+                            format={"DD/MM/YYYY"}
+                            onChange={(newValue) => {
+                                setValueDate(newValue)
+                            }}
+                        />
+
+                    </LocalizationProvider>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Batal</Button>
+                    <Button onClick={addData}>Simpan</Button>
+                </DialogActions>
+                {loading && <CircularProgress/>}
+                {errorData && <Alert variant="filled" severity="error">
+                    Gagal menambahkan data
+                </Alert>}
+            </Dialog>
+            {dataListTable ? dataListTable.data_list ? <><TableContainer component={Paper} className={"mt-2"}>
+                    <Table sx={{minWidth: 650}} aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Tanggal Input</TableCell>
+                                <TableCell align="right">Deskripsi</TableCell>
+                                <TableCell align="right">Jumlah</TableCell>
+                                <TableCell align="right">Tipe Transaksi</TableCell>
+                                <TableCell align="right">Periode</TableCell>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <TablePagination
-                component="div"
-                count={dataListTable.count}
-                page={page}
-                onPageChange={handleChangePage}
-                rowsPerPage={rowsPerPage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-            />
+                        </TableHead>
+                        <TableBody>
+                            {dataListTable ? dataListTable.data_list.map((res, index) => (
+                                <TableRow
+                                    key={res.id}
+                                    sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                                    onClick={() => {
+                                        console.log(index)
+                                    }}
+                                >
+                                    <TableCell component="th" scope="row">
+                                        {res.input_date}
+                                    </TableCell>
+                                    <TableCell align="right">{res.description}</TableCell>
+                                    <TableCell align="right">{res.amount}</TableCell>
+                                    <TableCell align="right">{res.type_transaction}</TableCell>
+                                    <TableCell align="right">{res.period.month} {res.period.year}</TableCell>
+                                </TableRow>
+                            )) : <Typography>Error</Typography>}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                    <TablePagination
+                        component="div"
+                        count={dataListTable ? dataListTable.count : 10}
+                        page={page}
+                        onPageChange={handleChangePage}
+                        rowsPerPage={rowsPerPage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                    /></> : <Typography className={"text-center"}> Tidak Ada data</Typography> :
+                <Typography className={"text-center"}>Tunggu sebentar</Typography>}
         </>
 
     );
