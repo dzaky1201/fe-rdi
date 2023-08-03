@@ -16,7 +16,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 
 
-export default function UpdateDialogFundingComponent({openUpdateDialog, setOpenUpdateDialog, id, setId,status, setStatus}) {
+export default function UpdateDialogInvestComponent({openUpdateDialog, setOpenUpdateDialog, id, setId,status, setStatus}) {
     const cookies = parseCookies()
     const [description, setDescription] = useState("")
     const [selectTypeTransaction, setSelectTypeTransaction] = useState("")

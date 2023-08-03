@@ -35,8 +35,7 @@ import {Delete, KeyboardArrowDown} from "@mui/icons-material";
 import EditIcon from '@mui/icons-material/Edit';
 import * as React from "react";
 import StyledMenu from "@/app/(home)/operasional/MenuStyle";
-import UpdateDialogOperationalComponent from "@/app/(home)/operasional/UpdateDialogOperationalComponent";
-import UpdateDialogFundingComponent from "@/app/(home)/funding/UpdateDialogFundingComponent";
+import UpdateDialogInvestComponent from "@/app/(home)/invest/UpdateDialogInvestComponent";
 
 function formatRupiah(money) {
 
@@ -225,7 +224,7 @@ export default function InvestPage() {
                     Tambah data baru
                 </Button>
             </Box>
-            <UpdateDialogFundingComponent openUpdateDialog={openUpdateDialog} setOpenUpdateDialog={setOpenUpdateDialog}
+            <UpdateDialogInvestComponent openUpdateDialog={openUpdateDialog} setOpenUpdateDialog={setOpenUpdateDialog}
                                           id={itemId} setId={setItemId} status={statusUpdate} setStatus={setStatusUpdate}/>
             <Dialog open={open} onClose={handleClose} fullWidth={true}>
                 <DialogTitle>Tambah data arus kas</DialogTitle>
