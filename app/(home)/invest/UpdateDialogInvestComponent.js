@@ -16,7 +16,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 
 
-export default function UpdateDialogComponent({openUpdateDialog, setOpenUpdateDialog, id, setId,status, setStatus}) {
+export default function UpdateDialogFundingComponent({openUpdateDialog, setOpenUpdateDialog, id, setId,status, setStatus}) {
     const cookies = parseCookies()
     const [description, setDescription] = useState("")
     const [selectTypeTransaction, setSelectTypeTransaction] = useState("")
@@ -42,7 +42,7 @@ export default function UpdateDialogComponent({openUpdateDialog, setOpenUpdateDi
         data: detailData,
         isLoading,
         error
-    } = useSWR(openUpdateDialog ? `http://localhost:8080/api/v1/activity/operation/${id}` : "", fetcherDetail)
+    } = useSWR(openUpdateDialog ? `http://localhost:8080/api/v1/activity/invest/${id}` : "", fetcherDetail)
 
     useEffect(() => {
         if (openUpdateDialog) {
@@ -74,7 +74,7 @@ export default function UpdateDialogComponent({openUpdateDialog, setOpenUpdateDi
                 'Authorization': `Bearer ${cookies.token}`
             },
             method: 'PUT',
-            url: `http://localhost:8080/api/v1/activity/update/operation/${id}`,
+            url: `http://localhost:8080/api/v1/activity/update/invest/${id}`,
             data: {
                 input_date: dayjs(valueDate.$d).format("DD/MM/YYYY"),
                 description: description,
