@@ -17,7 +17,7 @@ export default function Home() {
         if (cookies.token) {
             router.replace('/summary')
         }
-    }, [])
+    }, [cookies.token])
     const [loading, setLoading] = useState(false);
     const {register, handleSubmit, watch, formState: {errors}} = useForm();
 
@@ -28,8 +28,11 @@ export default function Home() {
             password: e.password
         }).then(res => {
             setLoading(false)
-            nookies.set(null, "token", res.data.data_list.token);
-            router.replace("/summary");
+            if (res.status === 200){
+                nookies.set(null, "token", res.data.data.token);
+                router.replace("/summary");
+            }
+
         }).catch(err => {
             setLoading(false)
         })

@@ -34,7 +34,8 @@ import {useDebounce} from "use-debounce";
 import {Delete, KeyboardArrowDown} from "@mui/icons-material";
 import EditIcon from '@mui/icons-material/Edit';
 import * as React from "react";
-import StyledMenu from "@/app/(home)/operasional/MenuComponent";
+import StyledMenu from "@/app/(home)/operasional/MenuStyle";
+import UpdateDialogComponent from "@/app/(home)/operasional/UpdateDialogComponent";
 
 function formatRupiah(money) {
 
@@ -55,6 +56,7 @@ export default function OperationalPage() {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [open, setOpen] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
+    const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
     const [valueDate, setValueDate] = useState(dayjs());
     const [description, setDescription] = useState("");
     const [selectTypeTransaction, setSelectTypeTransaction] = useState("");
@@ -65,8 +67,9 @@ export default function OperationalPage() {
     const [errorData, setErrorData] = useState(false);
     const [search, setSearch] = useState("");
     const [debouncedText] = useDebounce(search, 2000);
-    const [idDelete, setIdDelete] = useState(0);
+    const [itemId, setItemId] = useState(0);
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [statusUpdate, setStatusUpdate] = useState(0);
 
     const openMenu = Boolean(anchorEl);
     const handleClickMenu = (event) => {
@@ -86,7 +89,7 @@ export default function OperationalPage() {
                 url: `http://localhost:8080/api/v1/periods`,
             }).then(res => {
                 if (res.status === 200) {
-                    setPeriodCollection(res.data.data_list)
+                    setPeriodCollection(res.data.data)
                 }
             }).catch(() => {
                 setLoading(false)
@@ -102,6 +105,15 @@ export default function OperationalPage() {
         isLoading: loadingListTable,
         mutate: mutateData
     } = useSWR(`http://localhost:8080/api/v1/activity/list/operation?page=${page + 1}&limit=${rowsPerPage}&description=${debouncedText}`, fetcher)
+
+    useEffect(()=>{
+        if (statusUpdate === 200) {
+            mutateData({...dataListTable, name: statusUpdate})
+            setStatusUpdate(0)
+        }
+    }, [statusUpdate])
+
+
 
     const addData = () => {
         setErrorData(false)
@@ -123,7 +135,7 @@ export default function OperationalPage() {
             if (res.status === 200) {
                 handleClose()
                 setValueDate(dayjs())
-                mutateData({...dataListTable, name: res.data.data_list})
+                mutateData({...dataListTable, name: res.data.data})
             }
         }).catch(() => {
             setLoading(false)
@@ -132,7 +144,6 @@ export default function OperationalPage() {
     }
 
     const deleteData = () => {
-        console.log(idDelete)
         setErrorData(false)
         setLoading(true)
         axios.request({
@@ -140,12 +151,12 @@ export default function OperationalPage() {
                 'Authorization': `Bearer ${cookies.token}`
             },
             method: 'DELETE',
-            url: `http://localhost:8080/api/v1/activity/delete/operation/${idDelete}`,
+            url: `http://localhost:8080/api/v1/activity/delete/operation/${itemId}`,
         }).then(res => {
             setLoading(false)
             if (res.status === 200) {
                 handleCloseDelete()
-                mutateData({...dataListTable, name: res.data.data_list})
+                mutateData({...dataListTable, name: res.data.data})
             }
         }).catch(() => {
             setLoading(false)
@@ -157,15 +168,14 @@ export default function OperationalPage() {
         setOpen(true);
     };
 
-    const handleClickOpenDelete = (id) => {
+    const handleClickOpenDelete = () => {
         setOpenDelete(true);
         handleCloseMenu()
-        setIdDelete(id)
     };
 
     const handleCloseDelete = () => {
         setOpenDelete(false);
-        setIdDelete(0)
+        setItemId(0)
     };
 
     const handleClose = (event, reason) => {
@@ -206,13 +216,16 @@ export default function OperationalPage() {
         <>
             {loadingListTable && <Box className={'w-full mb-2'}><LinearProgress className={"bg-orange-500"}/></Box>}
             <Box className={"flex justify-between"}>
-                <TextField id="outlined-search" size={"small"} label="Cari data keuangan" type="search" value={search}
+                <TextField id="outlined-search" size={"small"} label="Cari data keuangan" type="search"
+                           value={search}
                            onChange={(e) => setSearch(e.target.value)}/>
                 <Button variant="contained" className={"bg-orange-500 hover:bg-orange-400"} size={"small"}
                         onClick={handleClickOpen}>
                     Tambah data baru
                 </Button>
             </Box>
+            <UpdateDialogComponent openUpdateDialog={openUpdateDialog} setOpenUpdateDialog={setOpenUpdateDialog}
+                                   id={itemId} setId={setItemId} status={statusUpdate} setStatus={setStatusUpdate}/>
             <Dialog open={open} onClose={handleClose} fullWidth={true}>
                 <DialogTitle>Tambah data arus kas</DialogTitle>
                 <DialogContent>
@@ -342,7 +355,7 @@ export default function OperationalPage() {
                     <Button onClick={deleteData}>Ya</Button>
                 </DialogActions>
             </Dialog>
-            {dataListTable ? dataListTable.data_list ? <><TableContainer component={Paper} className={"mt-2"}>
+            {dataListTable ? dataListTable.data ? <><TableContainer component={Paper} className={"mt-2"}>
                     <Table sx={{minWidth: 650}} aria-label="simple table">
                         <TableHead className={"bg-gray-100"}>
                             <TableRow>
@@ -356,13 +369,10 @@ export default function OperationalPage() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {dataListTable ? dataListTable.data_list.map((res, index) => (
+                            {dataListTable ? dataListTable.data.map((res, index) => (
                                 <TableRow
                                     key={res.id}
                                     sx={{'&:last-child td, &:last-child th': {border: 0}}}
-                                    onClick={() => {
-                                        console.log(res.id)
-                                    }}
                                 >
                                     <TableCell component="th" scope="row">
                                         {res.input_date}
@@ -381,7 +391,10 @@ export default function OperationalPage() {
                                             aria-expanded={openMenu ? 'true' : undefined}
                                             variant="contained"
                                             disableElevation
-                                            onClick={handleClickMenu}
+                                            onClick={(event) => {
+                                                handleClickMenu(event)
+                                                setItemId(res.id)
+                                            }}
                                             endIcon={<KeyboardArrowDown/>}
                                         >
                                             Actions
@@ -395,11 +408,14 @@ export default function OperationalPage() {
                                             open={openMenu}
                                             onClose={handleCloseMenu}
                                         >
-                                            <MenuItem onClick={handleCloseMenu} disableRipple>
+                                            <MenuItem onClick={() => {
+                                                setOpenUpdateDialog(true)
+                                                handleCloseMenu()
+                                            }} disableRipple>
                                                 <EditIcon/>
                                                 Edit
                                             </MenuItem>
-                                            <MenuItem onClick={() => handleClickOpenDelete(res.id)} disableRipple>
+                                            <MenuItem onClick={handleClickOpenDelete} disableRipple>
                                                 <Delete/>
                                                 Delete
                                             </MenuItem>
