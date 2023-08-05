@@ -151,7 +151,12 @@ export default function DashboardLayout({children}) {
                         <MenuIcon/>
                     </IconButton>
                     <Typography variant="h6" noWrap component="div">
-                        Cashflow
+                        {selectedIndex === 0 && "Ringkasan kas"}
+                        {selectedIndex === 1 && "Operasional"}
+                        {selectedIndex === 2 && "Invest"}
+                        {selectedIndex === 3 && "Keuangan"}
+                        {selectedIndex === 4 && "Akun"}
+                        {selectedIndex === 5 && "Periode"}
                     </Typography>
                 </Toolbar>
             </AppBar>

@@ -35,8 +35,8 @@ export default function LineChartComponent({report,year}) {
     }, [report])
     return (
         <>
-            <div className="w-[1100px] h-screen">
-                <div className='border border-gray-400 pt-0 rounded-xl  w-full h-fit shadow-xl'>
+            <div className="w-full h-screen">
+                <div className='border border-gray-400 pt-0 rounded-xl  w-full h-max shadow-xl'>
                     <canvas id='myChart'></canvas>
                 </div>
             </div>

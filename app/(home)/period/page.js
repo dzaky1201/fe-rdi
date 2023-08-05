@@ -2,16 +2,17 @@
 import {Typography} from "@mui/material";
 import {useEffect} from "react";
 import CheckSession from "@/app/(home)/helper";
+import PeriodListComponent from "@/app/(home)/period/component/PeriodListComponent";
 
 
 export default function PeriodPage() {
-    useEffect(()=>{
+    useEffect(() => {
         CheckSession()
     })
     return (
-        <Typography className="m-auto">
-            Ini adalah period
-        </Typography>
+        <>
+            <PeriodListComponent/>
+        </>
 
     )
 }
