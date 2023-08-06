@@ -34,7 +34,7 @@ import {useDebounce} from "use-debounce";
 import {Delete, KeyboardArrowDown} from "@mui/icons-material";
 import EditIcon from '@mui/icons-material/Edit';
 import * as React from "react";
-import StyledMenu from "@/app/(home)/operasional/MenuStyle";
+import StyledMenu from "@/app/(home)/_style/MenuStyle";
 import UpdateDialogOperationalComponent from "@/app/(home)/operasional/UpdateDialogOperationalComponent";
 
 function formatRupiah(money) {
@@ -211,6 +211,8 @@ export default function OperationalPage() {
         setPage(0);
     };
 
+    console.log(periodCollection)
+
 
     return (
         <>
@@ -287,6 +289,7 @@ export default function OperationalPage() {
                         freeSolo
                         id="free-solo-2-demo"
                         disableClearable
+                        disabled={periodCollection === null && true}
                         className={"mt-2"}
                         getOptionLabel={(option) => option.label}
                         renderOption={(props, option) => {
@@ -303,7 +306,7 @@ export default function OperationalPage() {
                         renderInput={(params) => (
                             <TextField
                                 {...params}
-                                label="Pilih Periode"
+                                label={periodCollection === null ? "Buat periode terlebih dahulu !" : "Pilih Periode"}
                                 InputProps={{
                                     ...params.InputProps,
                                     type: 'search',
@@ -327,7 +330,7 @@ export default function OperationalPage() {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Batal</Button>
-                    <Button onClick={addData}>Simpan</Button>
+                    <Button disabled={periodCollection === null && true} onClick={addData}>Simpan</Button>
                 </DialogActions>
                 {loading && <CircularProgress/>}
                 {errorData && <Alert variant="filled" severity="error">

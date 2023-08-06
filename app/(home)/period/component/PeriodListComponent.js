@@ -13,7 +13,7 @@ import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
 import {Delete, KeyboardArrowDown} from "@mui/icons-material";
-import StyledMenu from "@/app/(home)/operasional/MenuStyle";
+import StyledMenu from "@/app/(home)/_style/MenuStyle";
 import EditIcon from "@mui/icons-material/Edit";
 import PeriodDeleteComponent from "@/app/(home)/period/component/PeriodDeleteComponent";
 import PeriodUpdateComponent from "@/app/(home)/period/component/PeriodUpdateComponent";
@@ -77,7 +77,7 @@ export default function PeriodListComponent() {
         }
     }, [status])
 
-    if ((!data || isLoading) && (!dataYears || loadingYear) || data === undefined || data.data === null || dataYears.data === null) {
+    if ((!data || isLoading) && (!dataYears || loadingYear) || data === undefined || data.data === null || dataYears === undefined ||dataYears.data === null) {
         return (
             <>
                 <Box className={"flex flex-col"}>

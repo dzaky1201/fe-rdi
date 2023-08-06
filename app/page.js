@@ -70,7 +70,7 @@ export default function Home() {
                     {errors.password && <Typography className="text-start text-red-600">Masukan password !</Typography>}
 
                     <Button variant={"contained"} type={"submit"}
-                            disabled={(errors.email || errors.password) || (watch("email") === '' || watch("password") === '') && true}
+                            disabled={(errors.email || errors.password) || (watch("email") === '' || watch("password") === '' || loading) && true}
                             className="bg-orange-500 hover:bg-orange-300">
                         Login
                     </Button>

@@ -1,10 +1,7 @@
 "use client";
 import {styled, useTheme} from "@mui/material/styles";
-import MuiAppBar from "@mui/material/AppBar";
-import MuiDrawer from "@mui/material/Drawer";
 import nookies, {destroyCookie, parseCookies} from "nookies";
 import {redirect, useRouter} from "next/navigation";
-import {useEffect, useState} from "react";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import Toolbar from "@mui/material/Toolbar";
@@ -28,82 +25,18 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogActions from "@mui/material/DialogActions";
 import * as React from "react";
-
-const drawerWidth = 240;
-
-const openedMixin = (theme) => ({
-    width: drawerWidth,
-    transition: theme.transitions.create('width', {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen,
-    }),
-    overflowX: 'hidden',
-});
-
-const closedMixin = (theme) => ({
-    transition: theme.transitions.create('width', {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-    }),
-    overflowX: 'hidden',
-    width: `calc(${theme.spacing(7)} + 1px)`,
-    [theme.breakpoints.up('sm')]: {
-        width: `calc(${theme.spacing(8)} + 1px)`,
-    },
-});
-
-const DrawerHeader = styled('div')(({theme}) => ({
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    padding: theme.spacing(0, 1),
-    // necessary for content to be below app bar
-    ...theme.mixins.toolbar,
-}));
-
-const AppBar = styled(MuiAppBar, {
-    shouldForwardProp: (prop) => prop !== 'open',
-})(({theme, open}) => ({
-    zIndex: theme.zIndex.drawer + 1,
-    transition: theme.transitions.create(['width', 'margin'], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-    }),
-    ...(open && {
-        marginLeft: drawerWidth,
-        width: `calc(100% - ${drawerWidth}px)`,
-        transition: theme.transitions.create(['width', 'margin'], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
-    }),
-}));
-
-const Drawer = styled(MuiDrawer, {shouldForwardProp: (prop) => prop !== 'open'})(
-    ({theme, open}) => ({
-        width: drawerWidth,
-        flexShrink: 0,
-        whiteSpace: 'nowrap',
-        boxSizing: 'border-box',
-        ...(open && {
-            ...openedMixin(theme),
-            '& .MuiDrawer-paper': openedMixin(theme),
-        }),
-        ...(!open && {
-            ...closedMixin(theme),
-            '& .MuiDrawer-paper': closedMixin(theme),
-        }),
-    }),
-);
+import AppBarStyle from "@/app/(home)/_style/AppBarStyle";
+import DrawerStyle from "@/app/(home)/_style/DrawerStyle";
+import DrawerHeaderStyle from "@/app/(home)/_style/DrawerHeaderStyle";
 
 
 export default function DashboardLayout({children}) {
     const theme = useTheme();
     const router = useRouter();
-    const [open, setOpen] = useState(false);
-    const [selectedIndex, setSelectedIndex] = useState();
+    const [open, setOpen] = React.useState(false);
+    const [selectedIndex, setSelectedIndex] = React.useState();
 
-    const [openDialog, setOpenDialog] = useState(false);
+    const [openDialog, setOpenDialog] = React.useState(false);
 
     const handleOpenDialog = () => {
         setOpenDialog(true);
@@ -136,7 +69,7 @@ export default function DashboardLayout({children}) {
     return (
         <Box sx={{display: 'flex'}}>
             <CssBaseline/>
-            <AppBar position="fixed" open={open}>
+            <AppBarStyle position="fixed" open={open}>
                 <Toolbar className="bg-orange-500">
                     <IconButton
                         color="inherit"
@@ -159,14 +92,14 @@ export default function DashboardLayout({children}) {
                         {selectedIndex === 5 && "Periode"}
                     </Typography>
                 </Toolbar>
-            </AppBar>
-            <Drawer variant="permanent" open={open}>
-                <DrawerHeader>
+            </AppBarStyle>
+            <DrawerStyle variant="permanent" open={open}>
+                <DrawerHeaderStyle>
                     <Image width={200} height={70} src="/logo-fix.png" alt={"logo-rdi"} className="p-2"></Image>
                     <IconButton onClick={handleDrawerClose}>
                         {theme.direction === 'rtl' ? <ChevronRightIcon/> : <ChevronLeftIcon/>}
                     </IconButton>
-                </DrawerHeader>
+                </DrawerHeaderStyle>
                 <Divider/>
                 <Typography className={`text-black font-[500] p-2 text-[21px] ${open ? 'visible' : 'hidden'}`}>
                     Sistem Arus Kas
@@ -358,9 +291,9 @@ export default function DashboardLayout({children}) {
                         </ListItemButton>
                     </ListItem>
                 </List>
-            </Drawer>
+            </DrawerStyle>
             <Box component="main" sx={{flexGrow: 1, p: 3}}>
-                <DrawerHeader/>
+                <DrawerHeaderStyle/>
                 {children}
             </Box>
 
