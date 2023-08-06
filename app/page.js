@@ -41,37 +41,37 @@ export default function Home() {
 
     return (
         <main
-            className="flex flex-col min-h-screen max-h-screen items-center justify-items-start bg-[rgb(255,254,254)]">
+            className="tx-flex tx-flex-col tx-min-h-screen tx-max-h-screen tx-items-center tx-justify-items-start tx-bg-[rgb(255,254,254)]">
             {loading && <Box sx={{width: '100%'}}>
-                <LinearProgress className={"bg-orange-500"}/>
+                <LinearProgress className={"tx-bg-orange-500"}/>
             </Box>}
             <Image width={200} height={70} src="/logo-fix.png" className="mt-6" alt={"logo-rdi"}></Image>
-            <Typography className="text-xl font-semibold mt-6 text-black" variant={"h1"}>
+            <Typography className="tx-text-xl tx-font-semibold tx-mt-6 tx-text-black" variant={"h1"}>
                 Sistem Keuangan Rumah Dermawan Indonesia
             </Typography>
             <Card
-                className="flex-col box box-border h-[27rem] w-[24.813rem] border-[1px] border-[rgba(0, 0, 0, 0.53)] border-solid bg-white mt-6 rounded-[10px] shadow-[3px_4px_4px_0pxrgba(0, 0, 0, 0.25)]">
-                <Typography variant="h1" className="text-center mt-[26px] text-[23px] font-semibold">
+                className="tx-flex-col tx-box tx-box-border tx-h-[27rem] tx-w-[24.813rem] tx-border-[1px] tx-border-[rgba(0, 0, 0, 0.53)] tx-border-solid tx-bg-white tx-mt-6 tx-rounded-[10px] tx-shadow-[3px_4px_4px_0rgb(0, 0, 0, 0.25)]">
+                <Typography variant="h1" className="tx-text-center tx-mt-[26px] tx-text-[23px] tx-font-semibold">
                     Login
                 </Typography>
                 <form
                     onSubmit={handleSubmit(doLogin)}
-                    className="mt-12 flex flex-col gap-4 items-center">
+                    className="tx-mt-12 tx-flex tx-flex-col tx-gap-4 tx-items-center">
 
 
-                    <TextField className={"w-[16.25rem]"} id="outlined-basic" label="Email" type={"email"}
+                    <TextField className={"tx-w-[16.25rem]"} id="outlined-basic" label="Email" type={"email"}
                                variant="outlined"  {...register("email", {required: true})} />
 
                     {errors.email &&
-                        <Typography className="text-start text-red-600">Masukan alamat email !</Typography>}
+                        <Typography className="tx-text-start tx-text-red-600">Masukan alamat email !</Typography>}
 
-                    <TextField className={"w-[16.25rem]"} id="outlined-basic" label="Password" type={"password"}
+                    <TextField className={"tx-w-[16.25rem]"} id="outlined-basic" label="Password" type={"password"}
                                variant="outlined"  {...register("password", {required: true})} />
-                    {errors.password && <Typography className="text-start text-red-600">Masukan password !</Typography>}
+                    {errors.password && <Typography className="tx-text-start tx-text-red-600">Masukan password !</Typography>}
 
                     <Button variant={"contained"} type={"submit"}
                             disabled={(errors.email || errors.password) || (watch("email") === '' || watch("password") === '' || loading) && true}
-                            className="bg-orange-500 hover:bg-orange-300">
+                            className={`${(errors.email || errors.password) || (watch("email") === '' || watch("password") === '' || loading) ? 'tx-bg-gray-300 tx-text-gray-200': 'tx-bg-orange-500 tx-hover:tx-bg-orange-300'}`}>
                         Login
                     </Button>
                 </form>

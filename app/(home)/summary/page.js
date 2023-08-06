@@ -39,12 +39,12 @@ export default function SummaryPage() {
 
     if (!data || isLoading || !dataYears) {
         return (
-            <Typography className={"text-center my-0"}>Tunggu sebentar ....</Typography>)
+            <Typography className={"tx-text-center tx-my-0"}>Tunggu sebentar ....</Typography>)
     }
     if (dataYears.data === null) {
         return (
             <>
-                <Typography className={"text-center"}>Tidak ada data</Typography>
+                <Typography className={"tx-text-center"}>Tidak ada data</Typography>
             </>
         )
     }
@@ -53,8 +53,8 @@ export default function SummaryPage() {
     if (data.data.allData === null && dataYears) {
         return (
            <>
-               <Box className={"flex justify-between"}>
-                   <Typography className={"text-center my-0 basis-3/4"}>Tidak ada data</Typography>
+               <Box className={"tx-flex tx-justify-between"}>
+                   <Typography className={"tx-text-center tx-my-0 tx-basis-3/4"}>Tidak ada data</Typography>
                    <FormControl sx={{minWidth: 120}} size="small">
                        <InputLabel id="demo-select-small-label">Tahun</InputLabel>
                        <Select
@@ -78,9 +78,9 @@ export default function SummaryPage() {
     if (data && dataYears){
         return (
             <>
-                <Box className={"flex flex-row justify-center m-3"}>
+                <Box className={"tx-flex tx-flex-row tx-justify-center tx-m-3"}>
                     <LineChartComponent report={data} year={year}/>
-                    <FormControl sx={{minWidth: 120}} size="small" className={"ml-2"}>
+                    <FormControl sx={{minWidth: 120}} size="small" className={"tx-ml-2"}>
                         <InputLabel id="demo-select-small-label">Tahun</InputLabel>
                         <Select
                             labelId="demo-select-small-label"

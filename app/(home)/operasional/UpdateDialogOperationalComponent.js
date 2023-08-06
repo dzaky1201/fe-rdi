@@ -151,7 +151,7 @@ export default function UpdateDialogOperationalComponent({openUpdateDialog, setO
                             freeSolo
                             id="free-solo-2-demo"
                             disableClearable
-                            className={"mt-2"}
+                            className={"tx-mt-2"}
                             value={selectTypeTransaction}
                             // defaultValue={detailData ? detailData.data ? detailData.data.type_transaction : "" : ""}
                             getOptionLabel={(option) => typeof option.label === 'string'
@@ -179,7 +179,7 @@ export default function UpdateDialogOperationalComponent({openUpdateDialog, setO
                             )}
                         />
                         <TextField id="amount-input" label="Masukan Jumlah" variant="outlined"
-                                   className="mt-2" value={amount}
+                                   className="tx-mt-2" value={amount}
                                    onChange={(e) => {
                                        setAmount(e.target.value)
                                    }}
@@ -192,7 +192,7 @@ export default function UpdateDialogOperationalComponent({openUpdateDialog, setO
                             freeSolo
                             id="free-solo-2-demo"
                             disableClearable
-                            className={"mt-2"}
+                            className={"tx-mt-2"}
                             value={valuePeriod.label}
                             // defaultValue={detailData ? detailData.data ? detailData.data.label : "" : ""}
                             getOptionLabel={(option) => typeof option.label === 'string'
@@ -231,7 +231,7 @@ export default function UpdateDialogOperationalComponent({openUpdateDialog, setO
                                 label="Pilih Tanggal"
                                 value={valueDate}
                                 // defaultValue={detailData ? detailData.data ? detailData.data.input_value : "" : ""}
-                                className="mt-3"
+                                className="tx-mt-3"
                                 format={"DD/MM/YYYY"}
                                 onChange={(newValue) => {
                                     setValueDate(newValue)
@@ -241,8 +241,8 @@ export default function UpdateDialogOperationalComponent({openUpdateDialog, setO
                         </LocalizationProvider>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleClose}>Batal</Button>
-                        <Button onClick={updateData}>Update</Button>
+                        <Button onClick={handleClose} className={"tx-text-orange-300"}>Batal</Button>
+                        <Button onClick={updateData} className={"tx-text-orange-300"}>Update</Button>
                     </DialogActions>
                     {(loading || isLoading) && <CircularProgress/>}
                     {(errorData || error) && <Alert variant="filled" severity="error">
@@ -255,7 +255,7 @@ export default function UpdateDialogOperationalComponent({openUpdateDialog, setO
     if (isLoading || loadingPeriod) {
         return (
             <>
-                <Box className={'w-full mb-2'}><LinearProgress className={"bg-orange-500"}/></Box>
+                <Box className={'tx-w-full tx-mb-2'}><LinearProgress className={"tx-bg-orange-500"}/></Box>
             </>
         )
     }

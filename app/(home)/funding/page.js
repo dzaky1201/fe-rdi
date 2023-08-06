@@ -215,12 +215,12 @@ export default function FundingPage() {
 
     return (
         <>
-            {loadingListTable && <Box className={'w-full mb-2'}><LinearProgress className={"bg-orange-500"}/></Box>}
-            <Box className={"flex justify-between"}>
+            {loadingListTable && <Box className={'tx-w-full tx-mb-2'}><LinearProgress className={"tx-bg-orange-500"}/></Box>}
+            <Box className={"tx-flex tx-justify-between"}>
                 <TextField id="outlined-search" size={"small"} label="Cari data keuangan" type="search"
                            value={search}
                            onChange={(e) => setSearch(e.target.value)}/>
-                <Button variant="contained" className={"bg-orange-500 hover:bg-orange-400"} size={"small"}
+                <Button variant="contained" className={"tx-bg-orange-500 tx-hover:tx-bg-orange-400"} size={"small"}
                         onClick={handleClickOpen}>
                     Tambah data baru
                 </Button>
@@ -250,7 +250,7 @@ export default function FundingPage() {
                         freeSolo
                         id="free-solo-2-demo"
                         disableClearable
-                        className={"mt-2"}
+                        className={"tx-mt-2"}
                         getOptionLabel={(option) => option.label}
                         renderOption={(props, option) => {
                             return (
@@ -275,7 +275,7 @@ export default function FundingPage() {
                         )}
                     />
                     <TextField id="amount-input" label="Masukan Jumlah" variant="outlined"
-                               className="mt-2" value={amount}
+                               className="tx-mt-2" value={amount}
                                onChange={(e) => {
                                    setAmount(e.target.value)
                                }}
@@ -288,7 +288,7 @@ export default function FundingPage() {
                         freeSolo
                         id="free-solo-2-demo"
                         disableClearable
-                        className={"mt-2"}
+                        className={"tx-mt-2"}
                         disabled={periodCollection === null && true}
                         getOptionLabel={(option) => option.label}
                         renderOption={(props, option) => {
@@ -318,7 +318,7 @@ export default function FundingPage() {
                         <DatePicker
                             label="Pilih Tanggal"
                             value={valueDate}
-                            className="mt-3"
+                            className="tx-mt-3"
                             format={"DD/MM/YYYY"}
                             onChange={(newValue) => {
                                 setValueDate(newValue)
@@ -357,9 +357,9 @@ export default function FundingPage() {
                     <Button onClick={deleteData}>Ya</Button>
                 </DialogActions>
             </Dialog>
-            {dataListTable ? dataListTable.data ? <><TableContainer component={Paper} className={"mt-2"}>
+            {dataListTable ? dataListTable.data ? <><TableContainer component={Paper} className={"tx-mt-2"}>
                     <Table sx={{minWidth: 650}} aria-label="simple table">
-                        <TableHead className={"bg-gray-100"}>
+                        <TableHead className={"tx-bg-gray-100"}>
                             <TableRow>
                                 <TableCell>Tanggal Input</TableCell>
                                 <TableCell align="left">Deskripsi</TableCell>
@@ -389,7 +389,7 @@ export default function FundingPage() {
                                             id="demo-customized-button"
                                             aria-controls={openMenu ? 'demo-customized-menu' : undefined}
                                             aria-haspopup="true"
-                                            className={"bg-orange-500 hover:bg-orange-400"}
+                                            className={"tx-bg-orange-500 tx-hover:tx-bg-orange-400"}
                                             aria-expanded={openMenu ? 'true' : undefined}
                                             variant="contained"
                                             disableElevation
@@ -436,8 +436,8 @@ export default function FundingPage() {
                         onPageChange={handleChangePage}
                         rowsPerPage={rowsPerPage}
                         onRowsPerPageChange={handleChangeRowsPerPage}
-                    /></> : <Typography className={"text-center mt-80"}> Tidak Ada data</Typography> :
-                <Typography className={"text-center mt-80"}>Tunggu sebentar</Typography>}
+                    /></> : <Typography className={"tx-text-center tx-mt-80"}> Tidak Ada data</Typography> :
+                <Typography className={"tx-text-center tx-mt-80"}>Tunggu sebentar</Typography>}
         </>
 
     );

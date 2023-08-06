@@ -70,7 +70,7 @@ export default function DashboardLayout({children}) {
         <Box sx={{display: 'flex'}}>
             <CssBaseline/>
             <AppBarStyle position="fixed" open={open}>
-                <Toolbar className="bg-orange-500">
+                <Toolbar className="tx-bg-orange-500">
                     <IconButton
                         color="inherit"
                         aria-label="open drawer"
@@ -95,13 +95,13 @@ export default function DashboardLayout({children}) {
             </AppBarStyle>
             <DrawerStyle variant="permanent" open={open}>
                 <DrawerHeaderStyle>
-                    <Image width={200} height={70} src="/logo-fix.png" alt={"logo-rdi"} className="p-2"></Image>
+                    <Image width={200} height={70} src="/logo-fix.png" alt={"logo-rdi"} className="tx-p-2"></Image>
                     <IconButton onClick={handleDrawerClose}>
                         {theme.direction === 'rtl' ? <ChevronRightIcon/> : <ChevronLeftIcon/>}
                     </IconButton>
                 </DrawerHeaderStyle>
                 <Divider/>
-                <Typography className={`text-black font-[500] p-2 text-[21px] ${open ? 'visible' : 'hidden'}`}>
+                <Typography className={`tx-text-black tx-font-[500] tx-p-2 tx-text-[21px] ${open ? 'tx-visible' : 'tx-hidden'}`}>
                     Sistem Arus Kas
                 </Typography>
                 <List>
@@ -133,7 +133,7 @@ export default function DashboardLayout({children}) {
 
                 </List>
                 <Divider/>
-                <Typography className={`text-black font-[500] p-2 text-[21px] ${open ? 'visible' : 'hidden'}`}>
+                <Typography className={`tx-text-black tx-font-[500] tx-p-2 tx-text-[21px] ${open ? 'tx-visible' : 'tx-hidden'}`}>
                     Aktivitas
                 </Typography>
                 <List>
@@ -214,7 +214,7 @@ export default function DashboardLayout({children}) {
                     </ListItem>
                 </List>
                 <Divider/>
-                <Typography className={`text-black font-[500] p-2 text-[21px] ${open ? 'visible' : 'hidden'}`}>
+                <Typography className={`tx-text-black tx-font-[500] tx-p-2 tx-text-[21px] ${open ? 'tx-visible' : 'tx-hidden'}`}>
                     User
                 </Typography>
                 <List>

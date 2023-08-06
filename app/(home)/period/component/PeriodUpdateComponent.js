@@ -76,7 +76,7 @@ export default function PeriodUpdateComponent({idPeriod, openUpdateDialog, setOp
                         margin="dense"
                         id="month"
                         label="Bulan"
-                        className={"mx-2"}
+                        className={"tx-mx-2"}
                         value={month}
                         onChange={(e) => {
                             setMonth(e.target.value)

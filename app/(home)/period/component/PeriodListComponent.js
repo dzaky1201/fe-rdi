@@ -80,14 +80,14 @@ export default function PeriodListComponent() {
     if ((!data || isLoading) && (!dataYears || loadingYear) || data === undefined || data.data === null || dataYears === undefined ||dataYears.data === null) {
         return (
             <>
-                <Box className={"flex flex-col"}>
-                    <Button variant="contained" className={"bg-orange-500 hover:bg-orange-400 w-fit"} size={"small"}
+                <Box className={"tx-flex tx-flex-col"}>
+                    <Button variant="contained" className={"tx-bg-orange-500 tx-hover:tx-bg-orange-400 tx-w-fit"} size={"small"}
                             onClick={() => {
                                 setOpenCreateDialog(true)
                             }}>
                         Tambah data baru
                     </Button>
-                    <Typography className={"text-center"}>Tidak ada data</Typography>
+                    <Typography className={"tx-text-center"}>Tidak ada data</Typography>
                 </Box>
                 <PeriodCreateComponent openCreateDialog={openCreateDialog} setOpenCreateDialog={setOpenCreateDialog}
                                        token={cookies.token} setStatus={setStatus}/>
@@ -98,14 +98,14 @@ export default function PeriodListComponent() {
     if ((data || true) && (dataYears || true)) {
         return (
             <>
-                <Box className={"flex"}>
-                    <Button variant="contained" className={"bg-orange-500 hover:bg-orange-400"} size={"small"}
+                <Box className={"tx-flex"}>
+                    <Button variant="contained" className={"tx-bg-orange-500 tx-hover:tx-bg-orange-400"} size={"small"}
                             onClick={() => {
                                 setOpenCreateDialog(true)
                             }}>
                         Tambah data baru
                     </Button>
-                    <FormControl sx={{minWidth: 120}} size="small" className={"ml-2"}>
+                    <FormControl sx={{minWidth: 120}} size="small" className={"tx-ml-2"}>
                         <InputLabel id="demo-select-small-label">Tahun</InputLabel>
                         <Select
                             labelId="demo-select-small-label"
@@ -123,9 +123,9 @@ export default function PeriodListComponent() {
                     </FormControl>
                 </Box>
 
-                <TableContainer component={Paper} className={"mt-4"}>
+                <TableContainer component={Paper} className={"tx-mt-4"}>
                     <Table sx={{minWidth: 650}} aria-label="simple table">
-                        <TableHead className={"bg-gray-100"}>
+                        <TableHead className={"tx-bg-gray-100"}>
                             <TableRow>
                                 <TableCell align={"center"}>Periode</TableCell>
                                 <TableCell align="center">Action</TableCell>
@@ -145,7 +145,7 @@ export default function PeriodListComponent() {
                                             id="demo-customized-button"
                                             aria-controls={openMenu ? 'demo-customized-menu' : undefined}
                                             aria-haspopup="true"
-                                            className={"bg-orange-500 hover:bg-orange-400"}
+                                            className={"tx-bg-orange-500 tx-hover:tx-bg-orange-400"}
                                             aria-expanded={openMenu ? 'true' : undefined}
                                             variant="contained"
                                             disableElevation
