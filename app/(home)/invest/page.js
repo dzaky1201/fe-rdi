@@ -86,7 +86,7 @@ export default function InvestPage() {
                     'Authorization': `Bearer ${cookies.token}`
                 },
                 method: 'GET',
-                url: `http://localhost:8080/api/v1/periods`,
+                url: `https://test.rumahdermawan.com/api/v1/periods`,
             }).then(res => {
                 if (res.status === 200) {
                     setPeriodCollection(res.data.data)
@@ -104,7 +104,7 @@ export default function InvestPage() {
         error: errorListTable,
         isLoading: loadingListTable,
         mutate: mutateData
-    } = useSWR(`http://localhost:8080/api/v1/activity/list/invest?page=${page + 1}&limit=${rowsPerPage}&description=${debouncedText}`, fetcher)
+    } = useSWR(`https://test.rumahdermawan.com/api/v1/activity/list/invest?page=${page + 1}&limit=${rowsPerPage}&description=${debouncedText}`, fetcher)
 
     useEffect(()=>{
         if (statusUpdate === 200) {
@@ -123,7 +123,7 @@ export default function InvestPage() {
                 'Authorization': `Bearer ${cookies.token}`
             },
             method: 'POST',
-            url: `http://localhost:8080/api/v1/activity/create/invest`,
+            url: `https://test.rumahdermawan.com/api/v1/activity/create/invest`,
             data: {
                 input_date: dayjs(valueDate.$d).format("DD/MM/YYYY"),
                 description: description,
@@ -151,7 +151,7 @@ export default function InvestPage() {
                 'Authorization': `Bearer ${cookies.token}`
             },
             method: 'DELETE',
-            url: `http://localhost:8080/api/v1/activity/delete/invest/${itemId}`,
+            url: `https://test.rumahdermawan.com/api/v1/activity/delete/invest/${itemId}`,
         }).then(res => {
             setLoading(false)
             if (res.status === 200) {

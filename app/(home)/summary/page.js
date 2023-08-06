@@ -27,21 +27,20 @@ export default function SummaryPage() {
         error,
         isLoading,
         mutate
-    } = useSWR(`http://localhost:8080/api/v1/activity/report?year=${year}`, fetcher)
+    } = useSWR(`https://test.rumahdermawan.com/api/v1/activity/report?year=${year}`, fetcher)
 
     const fetcherFullYear = url => axios.get(url, {headers: {Authorization: `Bearer ${cookies.token}`}}).then(res => res.data)
     const {
         data: dataYears,
         error: errorYear,
         isLoading: loadingYear,
-    } = useSWR(`http://localhost:8080/api/v1/period/years`, fetcherFullYear)
+    } = useSWR(`https://test.rumahdermawan.com/api/v1/period/years`, fetcherFullYear)
 
 
     if (!data || isLoading || !dataYears) {
         return (
             <Typography className={"text-center my-0"}>Tunggu sebentar ....</Typography>)
     }
-    console.log(dataYears.data)
     if (dataYears.data === null) {
         return (
             <>

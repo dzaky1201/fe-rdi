@@ -24,7 +24,7 @@ export default function PeriodUpdateComponent({idPeriod, openUpdateDialog, setOp
                 'Authorization': `Bearer ${token}`
             },
             method: 'PUT',
-            url: `http://localhost:8080/api/v1/period/update/${idPeriod}`,
+            url: `https://test.rumahdermawan.com/api/v1/period/update/${idPeriod}`,
             data: {
                 year: year,
                 month: month,
@@ -42,7 +42,7 @@ export default function PeriodUpdateComponent({idPeriod, openUpdateDialog, setOp
         data,
         isLoading,
         error
-    } = useSWR(openUpdateDialog ? `http://localhost:8080/api/v1/period/${idPeriod}` : "", fetcherDetail)
+    } = useSWR(openUpdateDialog ? `https://test.rumahdermawan.com/api/v1/period/${idPeriod}` : "", fetcherDetail)
     useEffect(() => {
         if (!data || isLoading) {
             setYear('')

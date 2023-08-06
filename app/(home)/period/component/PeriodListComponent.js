@@ -58,7 +58,7 @@ export default function PeriodListComponent() {
         error,
         isLoading,
         mutate
-    } = useSWR(year !== '' ? `http://localhost:8080/api/v1/periods?year=${year}` : `http://localhost:8080/api/v1/periods`, fetcher)
+    } = useSWR(year !== '' ? `https://test.rumahdermawan.com/api/v1/periods?year=${year}` : `https://test.rumahdermawan.com/api/v1/periods`, fetcher)
 
     const fetcherFullYear = url => axios.get(url, {headers: {Authorization: `Bearer ${cookies.token}`}}).then(res => res.data)
     const {
@@ -66,7 +66,7 @@ export default function PeriodListComponent() {
         error: errorYear,
         isLoading: loadingYear,
         mutate: mutateYears
-    } = useSWR(`http://localhost:8080/api/v1/period/years`, fetcherFullYear)
+    } = useSWR(`https://test.rumahdermawan.com/api/v1/period/years`, fetcherFullYear)
 
     useEffect(() => {
         if (status === 200) {

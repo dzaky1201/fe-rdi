@@ -23,7 +23,7 @@ export default function Home() {
 
     const doLogin = (e) => {
         setLoading(true)
-        axios.post('http://localhost:8080/api/v1/user/login', {
+        axios.post('https://test.rumahdermawan.com/api/v1/user/login', {
             email: e.email,
             password: e.password
         }).then(res => {

@@ -26,7 +26,7 @@ export default function PeriodCreateComponent({openCreateDialog, setOpenCreateDi
                 'Authorization': `Bearer ${token}`
             },
             method: 'POST',
-            url: `http://localhost:8080/api/v1/period/create`,
+            url: `https://test.rumahdermawan.com/api/v1/period/create`,
             data: {
                 year: year,
                 month: month,
