@@ -87,7 +87,7 @@ export default function FundingPage() {
                     'Authorization': `Bearer ${cookies.token}`
                 },
                 method: 'GET',
-                url: `https://test.rumahdermawan.com/api/v1/periods`,
+                url: `${process.env.NEXT_PUBLIC_API_URL}/periods`,
             }).then(res => {
                 if (res.status === 200) {
                     setPeriodCollection(res.data.data)
@@ -105,7 +105,7 @@ export default function FundingPage() {
         error: errorListTable,
         isLoading: loadingListTable,
         mutate: mutateData
-    } = useSWR(`https://test.rumahdermawan.com/api/v1/activity/list/funding?page=${page + 1}&limit=${rowsPerPage}&description=${debouncedText}`, fetcher)
+    } = useSWR(`${process.env.NEXT_PUBLIC_API_URL}/activity/list/funding?page=${page + 1}&limit=${rowsPerPage}&description=${debouncedText}`, fetcher)
 
     useEffect(()=>{
         if (statusUpdate === 200) {
@@ -124,7 +124,7 @@ export default function FundingPage() {
                 'Authorization': `Bearer ${cookies.token}`
             },
             method: 'POST',
-            url: `https://test.rumahdermawan.com/api/v1/activity/create/funding`,
+            url: `${process.env.NEXT_PUBLIC_API_URL}/activity/create/funding`,
             data: {
                 input_date: dayjs(valueDate.$d).format("DD/MM/YYYY"),
                 description: description,
@@ -152,7 +152,7 @@ export default function FundingPage() {
                 'Authorization': `Bearer ${cookies.token}`
             },
             method: 'DELETE',
-            url: `https://test.rumahdermawan.com/api/v1/activity/delete/funding/${itemId}`,
+            url: `${process.env.NEXT_PUBLIC_API_URL}/activity/delete/funding/${itemId}`,
         }).then(res => {
             setLoading(false)
             if (res.status === 200) {

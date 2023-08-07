@@ -23,7 +23,6 @@ export default function UpdateDialogFundingComponent({openUpdateDialog, setOpenU
     const [amount, setAmount] = useState(0)
     const [yearPeriodID, setYearPeriodID] = useState(0);
     const [valueDate, setValueDate] = useState(dayjs());
-    const [typeTransactionValue, setTypeTransactionValue] = useState("");
     const [loading, setLoading] = useState(false);
     const [errorData, setErrorData] = useState(false);
     const [valuePeriod, setValuePeriod] = React.useState({id: 0, year: "", month: "", label: ""});
@@ -35,14 +34,14 @@ export default function UpdateDialogFundingComponent({openUpdateDialog, setOpenU
         data: periodCollection,
         isLoading: loadingPeriod,
         error: errorPeriod
-    } = useSWR(openUpdateDialog ? `https://test.rumahdermawan.com/api/v1/periods` : "", fetcher)
+    } = useSWR(openUpdateDialog ? `${process.env.NEXT_PUBLIC_API_URL}/periods` : "", fetcher)
 
     const fetcherDetail = url => axios.get(url, {headers: {Authorization: `Bearer ${cookies.token}`}}).then(res => res.data)
     const {
         data: detailData,
         isLoading,
         error
-    } = useSWR(openUpdateDialog ? `https://test.rumahdermawan.com/api/v1/activity/funding/${id}` : "", fetcherDetail)
+    } = useSWR(openUpdateDialog ? `${process.env.NEXT_PUBLIC_API_URL}/activity/funding/${id}` : "", fetcherDetail)
 
     useEffect(() => {
         if (openUpdateDialog) {
@@ -74,7 +73,7 @@ export default function UpdateDialogFundingComponent({openUpdateDialog, setOpenU
                 'Authorization': `Bearer ${cookies.token}`
             },
             method: 'PUT',
-            url: `https://test.rumahdermawan.com/api/v1/activity/update/funding/${id}`,
+            url: `${process.env.NEXT_PUBLIC_API_URL}/activity/update/funding/${id}`,
             data: {
                 input_date: dayjs(valueDate.$d).format("DD/MM/YYYY"),
                 description: description,

@@ -35,14 +35,14 @@ export default function UpdateDialogInvestComponent({openUpdateDialog, setOpenUp
         data: periodCollection,
         isLoading: loadingPeriod,
         error: errorPeriod
-    } = useSWR(openUpdateDialog ? `https://test.rumahdermawan.com/api/v1/periods` : "", fetcher)
+    } = useSWR(openUpdateDialog ? `${process.env.NEXT_PUBLIC_API_URL}/periods` : "", fetcher)
 
     const fetcherDetail = url => axios.get(url, {headers: {Authorization: `Bearer ${cookies.token}`}}).then(res => res.data)
     const {
         data: detailData,
         isLoading,
         error
-    } = useSWR(openUpdateDialog ? `https://test.rumahdermawan.com/api/v1/activity/invest/${id}` : "", fetcherDetail)
+    } = useSWR(openUpdateDialog ? `${process.env.NEXT_PUBLIC_API_URL}/activity/invest/${id}` : "", fetcherDetail)
 
     useEffect(() => {
         if (openUpdateDialog) {
@@ -74,7 +74,7 @@ export default function UpdateDialogInvestComponent({openUpdateDialog, setOpenUp
                 'Authorization': `Bearer ${cookies.token}`
             },
             method: 'PUT',
-            url: `https://test.rumahdermawan.com/api/v1/activity/update/invest/${id}`,
+            url: `${process.env.NEXT_PUBLIC_API_URL}/activity/update/invest/${id}`,
             data: {
                 input_date: dayjs(valueDate.$d).format("DD/MM/YYYY"),
                 description: description,

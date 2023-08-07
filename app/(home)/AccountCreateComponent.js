@@ -27,7 +27,7 @@ export default function AccountCreateComponent({openCreateDialog, setOpenCreateD
                 'Authorization': `Bearer ${token}`
             },
             method: 'POST',
-            url: `https://test.rumahdermawan.com/api/v1/user/register`,
+            url: `${process.env.NEXT_PUBLIC_API_URL}/user/register`,
             data: {
                 name: name,
                 email: email,

@@ -20,7 +20,7 @@ export default function PeriodDeleteComponent({idPeriod, openDeleteDialog, setOp
                 'Authorization': `Bearer ${token}`
             },
             method: 'DELETE',
-            url: `https://test.rumahdermawan.com/api/v1/period/delete/${idPeriod}`,
+            url: `${process.env.NEXT_PUBLIC_API_URL}/period/delete/${idPeriod}`,
         }).then(res => {
             if (res.status === 200) {
                 handleClose()
