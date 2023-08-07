@@ -45,7 +45,7 @@ export default function Home() {
             {loading && <Box sx={{width: '100%'}}>
                 <LinearProgress className={"tx-bg-orange-500"}/>
             </Box>}
-            <Image width={200} height={70} src="/logo-fix.png" className="mt-6" alt={"logo-rdi"}></Image>
+            <Image width={200} height={70} src="/logo-fix.png" className="mt-6" alt={"logo-rdi"} priority={false}></Image>
             <Typography className="tx-text-xl tx-font-semibold tx-mt-6 tx-text-black" variant={"h1"}>
                 Sistem Keuangan Rumah Dermawan Indonesia
             </Typography>

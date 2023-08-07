@@ -28,6 +28,8 @@ import * as React from "react";
 import AppBarStyle from "@/app/(home)/_style/AppBarStyle";
 import DrawerStyle from "@/app/(home)/_style/DrawerStyle";
 import DrawerHeaderStyle from "@/app/(home)/_style/DrawerHeaderStyle";
+import AccountCreateComponent from "@/app/(home)/AccountCreateComponent";
+import {useEffect} from "react";
 
 
 export default function DashboardLayout({children}) {
@@ -37,6 +39,15 @@ export default function DashboardLayout({children}) {
     const [selectedIndex, setSelectedIndex] = React.useState();
 
     const [openDialog, setOpenDialog] = React.useState(false);
+    const [openDialogRegister, setOpenDialogRegister] = React.useState(false);
+    const [status, setStatus] = React.useState(0);
+
+    useEffect(() => {
+        if (status === 200) {
+            setStatus(0)
+            onClickNav('/summary')
+        }
+    }, [status])
 
     const handleOpenDialog = () => {
         setOpenDialog(true);
@@ -227,8 +238,7 @@ export default function DashboardLayout({children}) {
                             }}
                             selected={selectedIndex === 4}
                             onClick={(event) => {
-                                setSelectedIndex(4)
-                                onClickNav('/account')
+                                setOpenDialogRegister(true)
                             }}
                         >
                             <ListItemIcon
@@ -296,6 +306,8 @@ export default function DashboardLayout({children}) {
                 <DrawerHeaderStyle/>
                 {children}
             </Box>
+
+            <AccountCreateComponent openCreateDialog={openDialogRegister} setOpenCreateDialog={setOpenDialogRegister} setStatus={setStatus}/>
 
             <Dialog
                 open={openDialog}
