@@ -27,14 +27,14 @@ export default function SummaryPage() {
         error,
         isLoading,
         mutate
-    } = useSWR(`https://test.rumahdermawan.com/api/v1/activity/report?year=${year}`, fetcher)
+    } = useSWR(`${process.env.NEXT_PUBLIC_API_URL}/activity/report?year=${year}`, fetcher)
 
     const fetcherFullYear = url => axios.get(url, {headers: {Authorization: `Bearer ${cookies.token}`}}).then(res => res.data)
     const {
         data: dataYears,
         error: errorYear,
         isLoading: loadingYear,
-    } = useSWR(`https://test.rumahdermawan.com/api/v1/period/years`, fetcherFullYear)
+    } = useSWR(`${process.env.NEXT_PUBLIC_API_URL}/period/years`, fetcherFullYear)
 
 
     if (!data || isLoading || !dataYears) {
